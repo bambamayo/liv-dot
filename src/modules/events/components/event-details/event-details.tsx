@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { getEventByIdOptions } from "../../lib/events.queries";
 import { EventTag } from "../event/event-tag";
 import { formatDate } from "@/utils/helpers";
@@ -14,6 +14,7 @@ import ArrowLeftIcon from "@/icons/arrow-left";
 
 export default function EventDetails() {
     const params = useParams({ from: "/_layout/events/$eventId" });
+    const navigate = useNavigate();
     const { data } = useSuspenseQuery(getEventByIdOptions(params.eventId));
 
     const { mutate: updateEvent } = useUpdateEvent();
@@ -57,7 +58,11 @@ export default function EventDetails() {
     return (
         <div>
             <div className="mb-8">
-                <Button variant="can-hover" className="gap-4">
+                <Button
+                    variant="can-hover"
+                    className="gap-4"
+                    onClick={() => navigate({ to: "/events" })}
+                >
                     <ArrowLeftIcon /> Back to Events
                 </Button>
             </div>

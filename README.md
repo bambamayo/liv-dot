@@ -2,6 +2,8 @@
 
 Frontend application built with React, TypeScript, Vite, TanStack Router, TanStack Query, and Tailwind CSS.
 
+Live app: `https://liv-dot.netlify.app/`
+
 ## Prerequisites
 
 This repository currently includes a `pnpm-lock.yaml`, but the app can also be run with other package managers if your colleague prefers `npm` or `yarn`.
