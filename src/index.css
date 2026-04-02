@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    --primary: #0076e0;
+    --text: #1e1f24;
+    --textSec: #62636c;
+    --interactive: #eff0f3;
+    --border: #d8d9e0;
+    --bg: #f9f9fb;
+
+    --font-family: "Open Sans", sans-serif;
+
+    --sidenav-width: 250px;
+}
+
+@utility text-* {
+    font-size: calc(--value(number) * var(--spacing));
+    font-size: --value(--spacing-*);
+
+    line-height: calc(--modifier(number) * var(--spacing));
+    line-height: --modifier([length], [*]);
+}
+
+@theme inline {
+    --color-primary: var(--primary);
+    --color-text: var(--text);
+    --color-textSec: var(--textSec);
+    --color-interactive: var(--interactive);
+    --color-border: var(--border);
+    --color-bg: var(--bg);
+
+    --font-sans: var(--font-family);
+
+    --spacing: 0.0625rem; /* 1px */
+}
