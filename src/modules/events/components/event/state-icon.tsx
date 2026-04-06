@@ -20,7 +20,7 @@ function DraftIcon() {
     );
 }
 
-function PublishedIcon() {
+function ScheduledIcon() {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -101,8 +101,8 @@ export default function StateIcon({ state }: StateIconProps) {
         case EVENT_STATES.DRAFT:
             Icon = DraftIcon;
             break;
-        case EVENT_STATES.PUBLISHED:
-            Icon = PublishedIcon;
+        case EVENT_STATES.SCHEDULED:
+            Icon = ScheduledIcon;
             break;
         case EVENT_STATES.READY_FOR_STREAMING:
             Icon = ReadyForStreamingIcon;

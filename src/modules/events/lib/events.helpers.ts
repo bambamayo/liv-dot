@@ -4,10 +4,10 @@ export const getEventNextStep = (eventState: EventState) => {
     switch (eventState) {
         case EVENT_STATES.DRAFT:
             return {
-                state: EVENT_STATES.PUBLISHED,
-                label: "Publish",
+                state: EVENT_STATES.SCHEDULED,
+                label: "Schedule",
             };
-        case EVENT_STATES.PUBLISHED:
+        case EVENT_STATES.SCHEDULED:
             return {
                 state: EVENT_STATES.READY_FOR_STREAMING,
                 label: "Ready for Streaming",

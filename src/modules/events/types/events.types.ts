@@ -1,6 +1,6 @@
 export const EVENT_STATES = {
     DRAFT: "draft",
-    PUBLISHED: "published",
+    SCHEDULED: "scheduled",
     READY_FOR_STREAMING: "ready_for_streaming",
     LIVE: "live",
     COMPLETED: "completed",
@@ -14,7 +14,7 @@ export interface Event {
     state: EventState;
     title: string;
     date: string;
-    canGoLive: boolean;
+    requirementsComplete: boolean;
 }
 
 export interface IUpdateEventPayload {

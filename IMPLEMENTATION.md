@@ -9,24 +9,25 @@ This currently works as follows:
 - Event data is simulated in [`src/modules/events/services/events.services.ts`](/Users/ayobamiagunroye/work/projects/liv-dot/src/modules/events/services/events.services.ts).
 - TanStack Query calls those service functions through query options and caches the results.
 - Any route or component that needs event data subscribes to the relevant query cache entry.
-- When an event is updated, the cache is updated as well, so subscribed parts of the UI receive the latest data immediately.
+- When an event is updated, the relevant cache entries are updated immediately, so subscribed parts of the UI receive the latest data right away.
+- After the mutation settles, the affected queries are revalidated to keep the cache aligned with the source of truth.
 - This keeps server-like state centralized and avoids duplicating the same data in multiple places.
 
 ### How state transitions are handled
 
-State transitions are driven by event updates. Once an event is updated, the relevant cached query data is updated too. Because the UI reads from the query cache, all subscribed components automatically re-render with the latest event state.
+State transitions are driven by event updates. Once an event is updated, the relevant cached query data is updated optimistically. Because the UI reads from the query cache, all subscribed components automatically re-render with the latest event state. The queries are then revalidated so the UI stays synchronized with the latest source data.
 
 This makes transitions feel seamless: the event details view, event list, and any other subscriber stay in sync without requiring manual prop drilling or separate synchronization logic.
 
 ### How the UI responds to blocked or incomplete states
 
-The main blocked flow in the app is the `READY_FOR_STREAMING -> LIVE` transition. An event in the `READY_FOR_STREAMING` state cannot move to `LIVE` until the required checklist has been completed.
+The main blocked flow in the app is the `SCHEDULED -> READY_FOR_STREAMING` transition. An event cannot move into `READY_FOR_STREAMING` until the required operational checklist has been completed.
 
-This is handled with the `canGoLive` field on the event:
+This is handled with the `requirementsComplete` field on the event:
 
-- if `canGoLive` is `false`, the `Go Live` action remains disabled
+- if `requirementsComplete` is `false`, the `Ready for Streaming` action remains disabled
 - the UI shows a checklist section explaining what still needs to be completed
-- when the user confirms completion, the event is updated with `canGoLive: true`
+- when the user confirms completion, the event is updated with `requirementsComplete: true`
 - once that update reaches the cache, the UI immediately enables the next transition
 
 This ensures the blocked state is reflected directly in the interface instead of relying on hidden logic.
@@ -55,11 +56,16 @@ This works well here because:
 
 - routes and components can read the same cached event data
 - updates can be reflected immediately in the UI
+- the cache can be rolled back on mutation failure and revalidated after updates
 - data fetching and caching behavior stay colocated with the feature logic
 - the app avoids introducing extra global state complexity for data that is already server-shaped
 
 ### Assumptions and tradeoffs
 
-One assumption in the `READY_FOR_STREAMING -> LIVE` flow is that the user completes the required checklist outside the app flow, then returns and clicks the `Checklist Completed` button. In other words, the checklist confirmation is treated as a user acknowledgment rather than a fully verified workflow.
+One assumption in the `SCHEDULED -> READY_FOR_STREAMING` flow is that the user completes the required checklist outside the app flow, then returns and clicks the `Checklist Completed` button. In other words, the checklist confirmation is treated as a user acknowledgment rather than a fully verified workflow.
 
 That is a deliberate simplification for this implementation. It keeps the flow easy to demonstrate, but in a production system those checklist items would likely be validated by real backend conditions or more explicit task completion steps.
+
+Another tradeoff is that readiness is modeled as a single `requirementsComplete` flag rather than individual requirement states. This keeps the state model simple for the scope of the assessment, but a production implementation would likely model each readiness requirement separately so the UI can show more granular operational status.
+
+The current mutation flow also revalidates related queries after each update. This is a reasonable choice for the scope of the assessment because it keeps the cache trustworthy, but it is something I would revisit as the number of users and mutations grows.

@@ -16,7 +16,7 @@ export function EventTag({ state }: EventTagProps) {
             color = "#6B7280";
             break;
         }
-        case EVENT_STATES.PUBLISHED: {
+        case EVENT_STATES.SCHEDULED: {
             bgColor = "#DBEAFE";
             color = "#1D4ED8";
             break;

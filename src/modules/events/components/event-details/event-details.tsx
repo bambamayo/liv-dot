@@ -40,13 +40,13 @@ export default function EventDetails() {
         );
     };
 
-    const handleCanGoLive = (eventId: string) => {
-        const updatedEvent = { ...data, canGoLive: true };
+    const handleRequirementsComplete = (eventId: string) => {
+        const updatedEvent = { ...data, requirementsComplete: true };
         updateEvent(
             { eventId, updatedEvent },
             {
                 onSuccess: () => {
-                    toast.success("Event ready for live streaming");
+                    toast.success("Event requirements marked as complete");
                 },
                 onError: (error) => {
                     toast.error(error.message ?? "Event update failed");
@@ -82,8 +82,9 @@ export default function EventDetails() {
                                 handleEventUpdate(data.id, nextStep.state)
                             }
                             disabled={
-                                nextStep.state === EVENT_STATES.LIVE &&
-                                !data.canGoLive
+                                nextStep.state ===
+                                    EVENT_STATES.READY_FOR_STREAMING &&
+                                !data.requirementsComplete
                             }
                         >
                             Move event to {nextStep.label}
@@ -92,11 +93,11 @@ export default function EventDetails() {
                 ) : null}
 
                 {nextStep &&
-                nextStep.state === EVENT_STATES.LIVE &&
-                !data.canGoLive ? (
+                nextStep.state === EVENT_STATES.READY_FOR_STREAMING &&
+                !data.requirementsComplete ? (
                     <div className="py-30 mt-30 border-t  border-t-border">
                         <h4 className="font-bold text-center ">
-                            Live Step Checklists
+                            Readiness Checklist
                         </h4>
                         <div className="flex items-center justify-center max-w-full mt-4 text-red-700 gap-2">
                             <WarningIcon />
@@ -111,7 +112,9 @@ export default function EventDetails() {
                             <li>Streaming ingest configured</li>
                             <li>ticket pricing configured</li>
                         </ul>
-                        <Button onClick={() => handleCanGoLive(data.id)}>
+                        <Button
+                            onClick={() => handleRequirementsComplete(data.id)}
+                        >
                             Checklist Completed
                         </Button>
                     </div>
